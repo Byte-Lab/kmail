@@ -7,4 +7,5 @@ edition = "2018"
 
 [dependencies]
 clap = { version = "3.1.0", features = ["derive"] }
-log = { version = "0.4" }
+log = "0.4"
+email_address = "0.2.1"
