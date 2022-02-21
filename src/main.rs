@@ -1,4 +1,5 @@
 mod maintainers;
+mod send;
 
 use clap::Parser;
 use std::path::PathBuf;
@@ -29,7 +30,6 @@ fn main() {
 
     let repo_root = cli.repo_path.unwrap_or(PathBuf::from("."));
     let maintainers = maintainers::get_maintainers(&cli.patch_path, &repo_root);
-    for maintainer in maintainers {
-        println!("Found maintainer {}!", maintainer);
-    }
+
+    send::send_patch(&maintainers, &cli.patch_path);
 }
