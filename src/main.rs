@@ -22,6 +22,12 @@ struct Cli {
     /// specified, the current directory is checked for a MAINTAINERS file.
     #[clap(short, long = "repo")]
     repo_path: Option<PathBuf>,
+
+    /// Arguments that will be passed directly to git send-email. For example, you may specify --
+    /// --dry-run --cc personal@my_domain.com to have the invocation be a dry-run, and to cc your
+    /// own personal email address.
+    #[clap(last = true)]
+    extra_arguments: Vec<String>,
 }
 
 fn main() {
@@ -31,5 +37,5 @@ fn main() {
     let repo_root = cli.repo_path.unwrap_or(PathBuf::from("."));
     let maintainers = maintainers::get_maintainers(&cli.patch_path, &repo_root);
 
-    send::send_patch(&maintainers, &cli.patch_path);
+    send::send_patch(&maintainers, &cli.patch_path, &cli.extra_arguments);
 }
