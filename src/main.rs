@@ -1,3 +1,5 @@
+mod maintainers;
+
 use clap::Parser;
 use std::path::PathBuf;
 
@@ -22,5 +24,11 @@ struct Cli {
 }
 
 fn main() {
-    let _ = Cli::parse();
+    let cli = Cli::parse();
+
+    let repo_root = cli.repo_path.unwrap_or(PathBuf::from("."));
+    let maintainers = maintainers::get_maintainers(&cli.patch_path, &repo_root);
+    for maintainer in maintainers {
+        println!("Found maintainer {}!", maintainer);
+    }
 }
