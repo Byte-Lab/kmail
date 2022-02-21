@@ -24,6 +24,7 @@ struct Cli {
 }
 
 fn main() {
+    env_logger::init();
     let cli = Cli::parse();
 
     let repo_root = cli.repo_path.unwrap_or(PathBuf::from("."));

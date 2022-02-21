@@ -10,11 +10,23 @@ fn get_maintainers_script(repo_root: &Path) -> PathBuf {
     let scripts_path = repo_root.join("scripts").join("get_maintainer.pl");
     let path_display = scripts_path.as_path().display();
     match scripts_path.as_path().exists() {
-        true => log::info!("Using {}", path_display),
+        true => log::info!("Using script {}", path_display),
         false => panic!("Maintainers script {} not found", path_display)
     };
 
     scripts_path
+}
+
+/// Get the MAINTAINERS file from the repo.
+fn get_maintainers_file(repo_root: &Path) -> PathBuf {
+    let maintainers_path = repo_root.join("MAINTAINERS");
+    let maintainers_display = maintainers_path.as_path().display();
+    match maintainers_path.as_path().exists() {
+        true => log::info!("Using MAINTAINERS file {}", maintainers_display),
+        false => panic!("Maintainers file {} not found", maintainers_display)
+    };
+
+    maintainers_path
 }
 
 fn get_patchset_files(patch_path: &Path) -> Vec<PathBuf> {
@@ -40,10 +52,17 @@ fn get_patchset_files(patch_path: &Path) -> Vec<PathBuf> {
     files
 }
 
-fn get_maintainers_for_file(script: & Path, patch: & Path) -> Vec<String> {
+fn get_maintainers_for_file(maintainers_file: &Path, script: &Path, patch: &Path) -> Vec<String> {
     // Invoke get_maintainer.pl with the flags required to only return email addresses.
     let output = Command::new(script.to_str().unwrap())
-                         .args(["--non", "--noroles", "--no-rolestats", "--no-tree", patch.to_str().unwrap()])
+                         .args(
+                             ["--non",
+                              "--noroles",
+                              "--no-rolestats",
+                              "--no-tree",
+                              "--mpath",
+                              maintainers_file.to_str().unwrap(),
+                              patch.to_str().unwrap()])
                          .output()
                          .expect("Failed to execute maintainers script");
     if !output.status.success() {
@@ -52,8 +71,8 @@ fn get_maintainers_for_file(script: & Path, patch: & Path) -> Vec<String> {
     }
 
     let script_output = String::from_utf8(output.stdout).expect("Failed to read stdout");
-
     script_output
+        .trim()
         .split("\n")
         .map(|address| {
             if !EmailAddress::is_valid(&address) {
@@ -67,11 +86,12 @@ fn get_maintainers_for_file(script: & Path, patch: & Path) -> Vec<String> {
 /// repository.
 pub fn get_maintainers(patch_path: &Path, repo_root: &Path) -> Vec<String> {
     let script = get_maintainers_script(repo_root);
+    let maintainers_file = get_maintainers_file(repo_root);
     let patchsets = get_patchset_files(patch_path);
 
     let mut maintainers = Vec::new();
     for patch in patchsets {
-        maintainers.extend(get_maintainers_for_file(&script, &patch));
+        maintainers.extend(get_maintainers_for_file(&maintainers_file, &script, &patch));
     }
 
     maintainers.sort();
