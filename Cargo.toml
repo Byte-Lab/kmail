@@ -1,11 +1,11 @@
 [package]
 name = "kmail"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2018"
 readme = "README.md"
 description = "A small helper utility for automatically collecting the email addresses that should be included when emailing a linux kernel patchset, and sending them the patchset with git send-email."
 repository = "https://github.com/Decave/kmail"
-license-file = "LICENSE"
+license = "GPL-3.0-or-later"
 keywords = [ "linux", "kernel", "mail", "email", "patch" ]
 categories = [ "command-line-utilities", "email" ]
 
