@@ -2,8 +2,12 @@
 name = "kmail"
 version = "0.1.0"
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+readme = "README.md"
+description = "A small helper utility for automatically collecting the email addresses that should be included when emailing a linux kernel patchset, and sending them the patchset with git send-email."
+repository = "https://github.com/Decave/kmail"
+license-file = "LICENSE"
+keywords = [ "linux", "kernel", "mail", "email", "patch" ]
+categories = [ "command-line-utilities", "email" ]
 
 [dependencies]
 clap = { version = "3.1.0", features = ["derive"] }

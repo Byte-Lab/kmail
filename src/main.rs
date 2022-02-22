@@ -18,10 +18,11 @@ struct Cli {
     /// upstream community using git send-email.
     patch_path: PathBuf,
 
-    /// The path to a linux source repository containing a MAINTAINERS file. If no path is
-    /// specified, the current directory is checked for a MAINTAINERS file.
-    #[clap(short, long = "repo")]
-    repo_path: Option<PathBuf>,
+    /// The path to a linux source tree containing a MAINTAINERS file, and a
+    /// scripts/get_maintainer.pl script. If no path is specified, the current directory is assumed
+    /// to be a linux kernel tree.
+    #[clap(short, long = "tree")]
+    tree_path: Option<PathBuf>,
 
     /// Arguments that will be passed directly to git send-email. For example, you may specify --
     /// --dry-run --cc personal@my_domain.com to have the invocation be a dry-run, and to cc your
@@ -34,8 +35,8 @@ fn main() {
     env_logger::init();
     let cli = Cli::parse();
 
-    let repo_root = cli.repo_path.unwrap_or(PathBuf::from("."));
-    let maintainers = maintainers::get_maintainers(&cli.patch_path, &repo_root);
+    let tree_root = cli.tree_path.unwrap_or(PathBuf::from("."));
+    let maintainers = maintainers::get_maintainers(&cli.patch_path, &tree_root);
 
     send::send_patch(&maintainers, &cli.patch_path, &cli.extra_arguments);
 }
