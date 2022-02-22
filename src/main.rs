@@ -11,7 +11,7 @@ use std::path::PathBuf;
                  for a kernel patchset.
 
 Kmail invokes scripts/get_maintainer.pl on a patchset, parses the email
-addresses (both the maintainers themselves and the relevant lists) to,
+addresses (both the maintainers themselves and the relevant lists) to
 email, and sends them the patchset using git send-email.")]
 struct Cli {
     /// The path to the patch (or a directory containing patches) to be mailed to the kernel
