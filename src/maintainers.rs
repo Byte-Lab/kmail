@@ -71,6 +71,11 @@ fn get_maintainers_for_file(maintainers_file: &Path, script: &Path, patch: &Path
     }
 
     let script_output = String::from_utf8(output.stdout).expect("Failed to read stdout");
+
+    if script_output.is_empty() {
+        return vec![];
+    }
+
     script_output
         .trim()
         .split("\n")
